@@ -280,3 +280,44 @@
     margin-bottom: 30px;
   }
 }
+
+.no-jobs-img {
+  margin-top: 50px;
+}
+
+@media screen and (max-width: 576px) {
+  .no-jobs-img {
+    height: 150px;
+  }
+}
+
+.no-jobs-heading {
+  font-family: 'Roboto';
+  color: #f1f5f9;
+  text-align: center;
+}
+
+@media screen and (max-width: 576px) {
+  .no-jobs-heading {
+    font-size: 19px;
+  }
+}
+
+.no-jobs-description {
+  font-family: 'Roboto';
+  color: #64748b;
+  text-align: center;
+}
+
+@media screen and (max-width: 576px) {
+  .no-jobs-description {
+    font-size: 15px;
+  }
+}
+
+.no-jobs-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}

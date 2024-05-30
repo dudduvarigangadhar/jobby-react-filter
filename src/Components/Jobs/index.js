@@ -67,7 +67,7 @@ class Jobs extends Component {
     apiJobData: [],
     searchInput: '',
     checkBoxInputs: [],
-    radioInput: '',
+    radioInput: 0,
   }
 
   componentDidMount = () => {
@@ -106,12 +106,12 @@ class Jobs extends Component {
   }
 
   getJobs = async () => {
+    this.setState({isJobs: apiConstantsStatus.inProgress})
     const {checkBoxInputs, radioInput, searchInput} = this.state
     console.log(checkBoxInputs)
     const jwtToken = Cookies.get('jwt_token')
-    this.setState({isJobs: apiConstantsStatus.inProgress})
-    const jobsUrl = `https://apis.ccbp.in/jobs?employment_type=${checkBoxInputs.join()}&minimum_package=${radioInput}&search=${searchInput}`
 
+    const jobsUrl = `https://apis.ccbp.in/jobs?employment_type=${checkBoxInputs.join()}&minimum_package=${radioInput}&search=${searchInput}`
     const jobOptions = {
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -161,11 +161,26 @@ class Jobs extends Component {
   renderJobSuccessView = () => {
     const {apiJobData} = this.state
     // console.log(apiJobData)
-    return (
+    const renderJobsList = apiJobData.length > 0
+    return renderJobsList ? (
       <div>
         {apiJobData.map(eachJob => (
           <JobItem eachJob={eachJob} key={eachJob.id} />
         ))}
+      </div>
+    ) : (
+      <div className="no-jobs-container">
+        <div>
+          <img
+            src="https://assets.ccbp.in/frontend/react-js/no-jobs-img.png"
+            alt="no jobs"
+            className="no-jobs-img"
+          />
+          <h1 className="no-jobs-heading">No Jobs Found</h1>
+          <p className="no-jobs-description">
+            We could not find any jobs. Try other filters.
+          </p>
+        </div>
       </div>
     )
   }
@@ -232,9 +247,6 @@ class Jobs extends Component {
   }
 
   onChangeCheckbox = event => {
-    // checkboxInputs = checkboxInputs.join(event.target.value)
-    // this.setState({checkBoxInputs: event.target.value})
-    // console.log(event.target.value)
     this.setState(
       prevState => ({
         checkBoxInputs: [...prevState.checkBoxInputs, event.target.value],
@@ -293,13 +305,14 @@ class Jobs extends Component {
   }
 
   onSearchCategory = () => {
-    const {searchInput} = this.state
+    // const {searchInput} = this.state
     //   this.setState({apiJobData: })
+    this.getJobs()
   }
 
   render() {
-    const {searchInput} = this.state
-    console.log(searchInput)
+    const {apiJobData, searchInput} = this.state
+    console.log(apiJobData)
     return (
       <div className="jobs-container">
         <Header />
@@ -341,8 +354,13 @@ class Jobs extends Component {
                 placeholder="Search"
                 value={searchInput}
                 onChange={this.onChangeSearch}
+                onKeyDown={this.onEnterSearchInput}
               />
-              <IoIosSearch size={20} className="search-icon" />
+              <IoIosSearch
+                size={20}
+                className="search-icon"
+                onClick={this.onSearchCategory}
+              />
             </div>
             <div className="lg-renderJobs-container">
               {this.renderJobsViews()}
